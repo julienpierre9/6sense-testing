@@ -5,72 +5,134 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Short Video Feed</title>
-  <style>
-    /* ===== THEME (set to your brand) ===== */
-    :root {
-      --brand-bg: #0f1115;
-      --brand-surface: #151a21;
-      --brand-text: #f5f7fa;
-      --brand-accent: #35c2a1; /* swap to 6sense accent */
-      --muted-text: #9aa4b2;
-      --danger: #e64646;
-    }
-    html, body { height: 100%; background: var(--brand-bg); color: var(--brand-text); margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    .app {
-      max-width: 480px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column;
-    }
-    header {
-      display:flex; align-items:center; gap:.75rem; padding: .75rem 1rem; background: var(--brand-surface); position: sticky; top: 0; z-index: 10;
-      border-bottom: 1px solid #202631;
-    }
-    header img.logo { width: 24px; height: 24px; border-radius: 4px; }
-    header h1 { font-size: 1rem; margin:0; }
-    .feed {
-      flex:1; overflow-y:auto; scroll-snap-type: y mandatory; /* allow per-card snap */
-    }
-    .card {
-      scroll-snap-align: start;
-      padding: 12px 12px 24px; border-bottom: 1px solid #202631;
-    }
-    .video-wrap {
-      position: relative; background:#000; border-radius:12px; overflow:hidden;
-      aspect-ratio: 9 / 16; /* vertical like TikTok */
-    }
-    .video-wrap video {
-      width:100%; height:100%; object-fit:cover;
-    }
-    .overlay {
-      position:absolute; inset:auto 8px 8px auto; display:flex; flex-direction:column; gap:.5rem;
-    }
-    .cta {
-      display:flex; gap:.5rem; align-items:center;
-      background: rgba(21,26,33,.75); color: #fff; border-radius:999px; padding:.35rem .6rem; border:1px solid rgba(255,255,255,.15);
-      backdrop-filter: blur(6px);
-    }
-    .cta button {
-      appearance:none; border:0; background:transparent; color:#fff; cursor:pointer;
-    }
-    .cta .count { font-size:.9rem; color:#fff; }
-    .meta {
-      display:flex; justify-content:space-between; align-items:center; margin-top:.5rem; color: var(--muted-text); font-size:.9rem;
-    }
-    .title { font-weight:600; color:var(--brand-text); margin: .5rem 0 0; }
-    .comments { margin-top:.5rem; background: var(--brand-surface); border-radius:8px; padding:.5rem; }
-    .comments h3 { font-size:.95rem; margin:.25rem 0 .5rem; color:var(--brand-text); }
-    .comment { display:flex; gap:.5rem; border-top:1px solid #202631; padding:.5rem 0; }
-    .comment:first-child { border-top:0; }
-    .comment .author { font-weight: 600; color: var(--brand-text); }
-    form.comment-form { display:flex; gap:.5rem; margin-top:.5rem; }
-    form.comment-form input[type="text"] {
-      flex:1; background:#0f1218; color:#fff; border:1px solid #202631; border-radius:999px; padding:.5rem .75rem;
-    }
-    form.comment-form button {
-      background: var(--brand-accent); color:#00130d; border:0; border-radius:999px; padding:.5rem .75rem; cursor:pointer; font-weight:600;
-    }
-    .badge { background:#0f1218; color:var(--muted-text); border:1px solid #202631; border-radius:6px; padding:.25rem .5rem; font-size:.8rem; }
-    .sr-only { position:absolute; left:-9999px; }
-    footer { padding:.75rem 1rem; text-align:center; color:var(--muted-text); font-size:.85rem; }
-  </style>
+ 
+<style>
+  /* ===== THEME (set to your brand) ===== */
+  :root {
+    --brand-bg: #0f1115;
+    --brand-surface: #151a21;
+    --brand-text: #f5f7fa;
+    --brand-accent: #35c2a1;
+    --muted-text: #9aa4b2;
+    --danger: #e64646;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--brand-bg);
+    color: var(--brand-text);
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  }
+
+  /* Make the app wider for laptop screens */
+  .app {
+    max-width: 1024px;          /* was 480px */
+    margin: 0 auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .75rem 1rem;
+    background: var(--brand-surface);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid #202631;
+  }
+
+  header img.logo { width: 24px; height: 24px; border-radius: 4px; }
+  header h1 { font-size: 1rem; margin: 0; }
+
+  .feed {
+    flex: 1;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+  }
+
+  .card {
+    scroll-snap-align: start;
+    padding: 12px 12px 24px;
+    border-bottom: 1px solid #202631;
+  }
+
+  /* Switch to horizontal (laptop) aspect ratio */
+  .video-wrap {
+    position: relative;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;       /* was 9 / 16 */
+  }
+
+  .video-wrap video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;          /* Use 'contain' for letterboxed playback */
+  }
+
+  .overlay {
+    position: absolute;
+    inset: auto 8px 8px auto;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  }
+
+  .cta {
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    background: rgba(21,26,33,.75);
+    color: #fff;
+    border-radius: 999px;
+    padding: .35rem .6rem;
+    border: 1px solid rgba(255,255,255,.15);
+    backdrop-filter: blur(6px);
+  }
+
+  .cta button {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .cta .count { font-size: .9rem; color: #fff; }
+
+  .meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: .5rem;
+    color: var(--muted-text);
+    font-size: .9rem;
+  }
+
+  .title { font-weight: 600; color: var(--brand-text); margin: .5rem 0 0; }
+  .comments { margin-top: .5rem; background: var(--brand-surface); border-radius: 8px; padding: .5rem; }
+  .comments h3 { font-size: .95rem; margin: .25rem 0 .5rem; color: var(--brand-text); }
+  .comment { display: flex; gap: .5rem; border-top: 1px solid #202631; padding: .5rem 0; }
+  .comment:first-child { border-top: 0; }
+  .comment .author { font-weight: 600; color: var(--brand-text); }
+  form.comment-form { display: flex; gap: .5rem; margin-top: .5rem; }
+  form.comment-form input[type="text"] {
+    flex: 1; background: #0f1218; color: #fff; border: 1px solid #202631; border-radius: 999px; padding: .5rem .75rem;
+  }
+  form.comment-form button {
+    background: var(--brand-accent); color: #00130d; border: 0; border-radius: 999px; padding: .5rem .75rem; cursor: pointer; font-weight: 600;
+  }
+  .badge { background: #0f1218; color: var(--muted-text); border: 1px solid #202631; border-radius: 6px; padding: .25rem .5rem; font-size: .8rem; }
+  .sr-only { position: absolute; left: -9999px; }
+  footer { padding: .75rem 1rem; text-align: center; color: var(--muted-text); font-size: .85rem; }
+</style>
+  
 </head>
 <body>
   <div class="app" role="application" aria-label="Short video feed">
