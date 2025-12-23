@@ -331,3 +331,19 @@
   </script>
 </body>
 </html>
+// Container to force height
+
+<script>
+  function postHeight() {
+    const h = Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight
+    );
+    window.parent.postMessage({ type: 'EMBED_HEIGHT', height: h }, '*');
+  }
+  // Post on load and whenever content changes
+  window.addEventListener('load', postHeight);
+  new MutationObserver(postHeight).observe(document.body, { childList: true, subtree: true });
+  window.addEventListener('resize', postHeight);
+</script>
+
